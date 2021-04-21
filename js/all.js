@@ -39,7 +39,7 @@
       <a href="#" class="addCartBtn" data-id="${item.id}">加入購物車</a>
       <h3>${item.title}</h3>
       <del class="originPrice">NT$${item.origin_price}</del>
-      <p class="nowPrice">NT$${item.price}</p>
+      <p class="nowPrice">NT$${thousandNum(item.price)}</p>
     </li>
     `;
     });
@@ -106,9 +106,9 @@
           <p>${item.product.title}</p>
         </div>
       </td>
-      <td>NT$${item.product.price}</td>
+      <td>NT$${thousandNum(item.product.price)}</td>
       <td>${item.quantity}</td>
-      <td>NT$${item.product.price * item.quantity}</td>
+      <td>NT$${thousandNum(item.product.price * item.quantity)}</td>
       <td class="discardBtn">
         <a href="#" class="material-icons" data-id="${item.id}">
           clear
@@ -118,7 +118,7 @@
     `;
     });
     shoppingCartBody.innerHTML = str;
-    finalTotal.textContent = `NT$${cartsData.finalTotal}`;
+    finalTotal.textContent = `NT$${thousandNum(cartsData.finalTotal)}`;
   }
 
   // [購物車列表]-- 刪除購物車列表(特定產品)
@@ -191,6 +191,7 @@
       .then(function (response) {
         alert('訂單已送出');
         myForm.reset();
+        getCartsList();
       });
   }
 
@@ -214,4 +215,9 @@
   submitBtn.addEventListener('click', submitForm); //表單驗證
 
   init();
+
+  // [千分位函式]
+  function thousandNum(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
 })();
