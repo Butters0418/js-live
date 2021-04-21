@@ -904,4 +904,8 @@ body {
 .orderTableWrap::-webkit-scrollbar {
   display: none;
 }
+
+.c3-chart-arc text {
+  fill: #fff;
+}
 /*# sourceMappingURL=all.css.map */

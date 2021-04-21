@@ -38,7 +38,7 @@
       <img src="${item.images}" alt="">
       <a href="#" class="addCartBtn" data-id="${item.id}">加入購物車</a>
       <h3>${item.title}</h3>
-      <del class="originPrice">NT$${item.origin_price}</del>
+      <del class="originPrice">NT$${thousandNum(item.origin_price)}</del>
       <p class="nowPrice">NT$${thousandNum(item.price)}</p>
     </li>
     `;

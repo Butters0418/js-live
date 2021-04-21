@@ -1,23 +1,20 @@
 (function () {
-  // C3.js
-  // let chart = c3.generate({
-  //   bindto: '#chart', // HTML 元素綁定
-  //   data: {
-  //     type: 'pie',
-  //     columns: [
-  //       ['Louvre 雙人床架', 1],
-  //       ['Antony 雙人床架', 2],
-  //       ['Anty 雙人床架', 3],
-  //       ['其他', 4],
-  //     ],
-  //     colors: {
-  //       'Louvre 雙人床架': '#DACBFF',
-  //       'Antony 雙人床架': '#9D7FEA',
-  //       'Anty 雙人床架': '#5434A7',
-  //       其他: '#301E5F',
-  //     },
-  //   },
-  // });
+  // C3初始假資料
+  let chart = c3.generate({
+    bindto: '#chart', // HTML 元素綁定
+    data: {
+      type: 'pie',
+      columns: [
+        ['Louvre 雙人床架', 1],
+        ['Antony 雙人床架', 2],
+        ['Anty 雙人床架', 3],
+        ['其他', 4],
+      ],
+    },
+    color: {
+      pattern: ['#301E5F', '#5434A7', '#9D7FEA', '#DACBFF'],
+    },
+  });
 
   const orderList = document.querySelector('.order-list');
   const delAllOrderBtn = document.querySelector('.discardAllBtn');
@@ -31,7 +28,7 @@
 
   // [c3]
   function renderC3() {
-    // 整理物件格式-- 列出所有  {{商品: 總營收}...}
+    // 整理物件格式-- {{商品: 總營收}...}
     let productsData = {};
     orderData.forEach(function (item) {
       item.products.forEach(function (productItem) {
@@ -51,12 +48,30 @@
       ary.push(productsData[item]);
       newAry.push(ary);
     });
-    // 排序新陣列
+    // 依營收排序新陣列
     let sortNewAry = newAry.sort(function (a, b) {
       return b[1] - a[1];
     });
-    console.log(sortNewAry);
-    // 新陣列切分前三頁及後三項
+    // 計算第三筆後加總為其他
+    if (sortNewAry.length > 3) {
+      let otherTotal = 0;
+      sortNewAry.forEach(function (item, index) {
+        index > 2 && (otherTotal += item[1]);
+      });
+      sortNewAry.splice(3, sortNewAry.length - 1);
+      sortNewAry.push(['其他', otherTotal]);
+    }
+    // render c3
+    c3.generate({
+      bindto: '#chart',
+      data: {
+        columns: sortNewAry,
+        type: 'pie',
+      },
+      color: {
+        pattern: ['#301E5F', '#5434A7', '#9D7FEA', '#DACBFF'],
+      },
+    });
   }
 
   // 陣列排序
