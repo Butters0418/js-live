@@ -1,23 +1,23 @@
 (function () {
   // C3.js
-  let chart = c3.generate({
-    bindto: '#chart', // HTML 元素綁定
-    data: {
-      type: 'pie',
-      columns: [
-        ['Louvre 雙人床架', 1],
-        ['Antony 雙人床架', 2],
-        ['Anty 雙人床架', 3],
-        ['其他', 4],
-      ],
-      colors: {
-        'Louvre 雙人床架': '#DACBFF',
-        'Antony 雙人床架': '#9D7FEA',
-        'Anty 雙人床架': '#5434A7',
-        其他: '#301E5F',
-      },
-    },
-  });
+  // let chart = c3.generate({
+  //   bindto: '#chart', // HTML 元素綁定
+  //   data: {
+  //     type: 'pie',
+  //     columns: [
+  //       ['Louvre 雙人床架', 1],
+  //       ['Antony 雙人床架', 2],
+  //       ['Anty 雙人床架', 3],
+  //       ['其他', 4],
+  //     ],
+  //     colors: {
+  //       'Louvre 雙人床架': '#DACBFF',
+  //       'Antony 雙人床架': '#9D7FEA',
+  //       'Anty 雙人床架': '#5434A7',
+  //       其他: '#301E5F',
+  //     },
+  //   },
+  // });
 
   const orderList = document.querySelector('.order-list');
   const delAllOrderBtn = document.querySelector('.discardAllBtn');
@@ -26,12 +26,45 @@
   // [init]
   function init() {
     getOrderList();
-    renderC3();
   }
   init();
 
   // [c3]
-  function renderC3() {}
+  function renderC3() {
+    // 整理物件格式-- 列出所有  {{商品: 總營收}...}
+    let productsData = {};
+    orderData.forEach(function (item) {
+      item.products.forEach(function (productItem) {
+        if (productsData[productItem.title] == undefined) {
+          productsData[productItem.title] = productItem.quantity * productItem.price;
+        } else {
+          productsData[productItem.title] += productItem.quantity * productItem.price;
+        }
+      });
+    });
+    // 整理陣列格式-- [[商品,總營收]...]
+    let originalAry = Object.keys(productsData);
+    let newAry = [];
+    originalAry.forEach(function (item) {
+      let ary = [];
+      ary.push(item);
+      ary.push(productsData[item]);
+      newAry.push(ary);
+    });
+    // 排序新陣列
+    let sortNewAry = newAry.sort(function (a, b) {
+      return b[1] - a[1];
+    });
+    console.log(sortNewAry);
+    // 新陣列切分前三頁及後三項
+  }
+
+  // 陣列排序
+  function sortNewAry(newAry) {
+    newAry.sort(function (a, b) {
+      return b[1] - a[1];
+    });
+  }
 
   // [訂單列表]-- api 取得
   function getOrderList() {
@@ -43,8 +76,9 @@
       })
       .then(function (response) {
         orderData = response.data.orders;
-        console.log(orderData);
+        // console.log(orderData);
         renderProductsHTML();
+        renderC3();
       });
   }
   // [訂單列表]-- 渲染至 html
